@@ -18,11 +18,15 @@
           <td><%= link_to @book.title, @book %></td>
           <td><%= @book.body %></td>
 
-          <% if @book.favorited_by?(current_user) %>
-            <td><%= link_to '❤︎', book_favorites_path(@book), method: :delete %><%= @book.favorites.count %></td>
-          <% else %>
-            <td><%= link_to '♡', book_favorites_path(@book), method: :post %><%= @book.favorites.count %></td>
-          <% end %>
+          <!--<%# if @book.favorited_by?(current_user) %>-->
+          <!--  <td><%#= link_to '❤︎', book_favorites_path(@book), method: :delete %><#%= @book.favorites.count %></td>-->
+          <!--<%# else %>-->
+          <!--  <td><%#= link_to '♡', book_favorites_path(@book), method: :post %><%#= @book.favorites.count %></td>-->
+          <!--<%# end %>-->
+
+          <td id="favorites-btn_<%= @book.id.to_s %>">
+            <%= render "favorites/favorites-btn", book: @book %>
+          </td>
 
           <td>
             コメント数:<%= @book.post_comments.count %>
@@ -34,28 +38,10 @@
           <% end %>
         </tr>
       </table>
-      <table>
-        <% @book.post_comments.each do |post_comment| %>
-        <tr>
-          <td>
-            <%= image_tag post_comment.user.get_profile_image, size:"100x100" %><br>
-            <%= post_comment.user.name %>
-          </td>
-          <td>
-            <%= post_comment.comment %>
-          </td>
-          <% if post_comment.user == current_user %>
-          <td>
-            <%= link_to "Destroy", book_post_comment_path(post_comment.book, post_comment), method: :delete, class: "btn btn-sm btn-danger" %>
-            <% end %>
-          </td>
-        </tr>
-        <% end %>
-      </table>
-        <%= form_with model: [@book, @post_comment],  local: true do |f| %>
-        <%= f.text_area :comment, size: '90x5' %><br>
-        <%= f.submit "送信" %>
-        <% end %>
+      <div id="comments_area">
+        <%= render 'post_comments/post_comments', book: @book, post_comment: @post_comment %>
+      </div>
+        <%= render 'post_comments/from', post_comment: @post_comment %>
       </div>
     </div>
   </div>
